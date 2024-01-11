@@ -1,0 +1,11 @@
+alembic==1.13.0
+aiomqtt==1.2.1
+faker==20.1.0
+fastapi==0.104.0
+fastapi-mqtt==2.0.0
+paho-mqtt==1.6.1
+psycopg2-binary
+pydantic==2.5.2
+pydantic-settings==2.0.3
+SQLAlchemy==2.0.22
+uvicorn==0.23.2

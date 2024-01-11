@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  api:
+    environment:
+      PYTHONUNBUFFERED: 1
+    build:
+      context: api/
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared:/usr/src/app/shared
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mosquitto
+    command:
+      - "python"
+      - "api.py"
+
+  client:
+    environment:
+      PYTHONUNBUFFERED: 1
+    build:
+      context: client/
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared:/usr/src/app/shared
+    deploy:
+      replicas: 2
+    depends_on:
+      - mosquitto
+    command:
+      - "python"
+      - "main.py"
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0.18
+    ports:
+      - "1883:1883" # Default MQTT protocol port
+      - "9001:9001" # Websocket support, if needed
+    volumes:
+      - ./compose/mosquitto/config:/mosquitto/config
+      - mosquitto_data:/mosquitto/data
+
+  postgres:
+    image: postgres:15-alpine
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+    env_file:
+        - ./.envs/.postgres
+    ports:
+      - 5432:5432
+
+volumes:
+  mosquitto_data:
+  postgres_data:
